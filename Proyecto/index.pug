@@ -1,0 +1,24 @@
+- var datas = { 'registrar': '', 'modificar': '', 'buscar': '', 'reporte': ''}
+
+body
+  div#scene
+    
+    #left-zone
+      ul.list
+        each val, index in datas
+          li.item
+              if index == "registrar"
+                input(type="radio", id='radio_' + val name="basic_carousel" value=val checked)
+              else
+                input(type="radio", id='radio_' + val name="basic_carousel" value=val) 
+              
+              label(for='radio_' + val, class='label_' + index)
+                | #{index}
+              div(class='content content_' + index)
+                span(class='picto')
+                h1
+                  | #{index}
+                p
+                  | #{val}
+    #middle-border
+    #right-zone
