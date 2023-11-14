@@ -379,6 +379,35 @@ namespace PL.Controllers
 
         public ActionResult Json()
         {
+            ML.Cliente resultCliente = new ML.Cliente();
+
+            resultCliente.Clientes = new List<object>();
+
+            using (var client = new HttpClient())
+            {
+                string urlApi = _configuration["urlWebApi"];
+
+                string requestUri = $"Cliente/GetAll";
+
+                var responseTask = client.GetAsync(new Uri(new Uri(urlApi), requestUri));
+                responseTask.Wait();
+
+                var result = responseTask.Result;
+
+                if (result.IsSuccessStatusCode)
+                {
+                    var readTask = result.Content.ReadAsAsync<ML.Result>();
+                    readTask.Wait();
+
+                    foreach (var resultItem in readTask.Result.Objects)
+                    {
+                        ML.Cliente ResultItemList = Newtonsoft.Json.JsonConvert.DeserializeObject<ML.Cliente>(resultItem.ToString());
+                        resultCliente.Clientes.Add(ResultItemList);
+                    }
+                }
+            }
+            _httpContextAccessor.HttpContext.Session.SetString("Json", JsonConvert.SerializeObject(resultCliente));
+
             return View();
         }
     }
